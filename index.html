@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="styles.css" />
+  <title>Fitness Tracker</title>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Amir Fitness</p>
+        <h1>Fitness Tracker</h1>
+        <p class="muted">متابعة التمارين والتغذية وقياسات الجسم في مكان واحد</p>
+      </div>
+      <button id="installBtn" class="secondary hidden">تثبيت التطبيق</button>
+    </header>
+
+    <nav class="tabs" aria-label="التنقل الرئيسي">
+      <button class="tab active" data-tab="dashboard">الرئيسية</button>
+      <button class="tab" data-tab="workouts">التمارين</button>
+      <button class="tab" data-tab="nutrition">التغذية</button>
+      <button class="tab" data-tab="measurements">القياسات</button>
+    </nav>
+
+    <main>
+      <section id="dashboard" class="panel active">
+        <div class="hero-card">
+          <div>
+            <span class="badge">آخر قياس</span>
+            <h2 id="heroWeight">84.0 كجم</h2>
+            <p id="heroDate" class="muted">12 سبتمبر 2026</p>
+          </div>
+          <div class="goal-ring" aria-label="تقدم هدف الوزن">
+            <span id="goalProgress">40%</span>
+            <small>نحو 70 كجم</small>
+          </div>
+        </div>
+
+        <div id="metricCards" class="metric-grid"></div>
+
+        <section class="card">
+          <div class="section-head">
+            <div><h3>اتجاه الوزن</h3><p class="muted">آخر القياسات المسجلة</p></div>
+          </div>
+          <canvas id="weightChart" width="900" height="280"></canvas>
+        </section>
+
+        <div class="two-col">
+          <section class="card">
+            <h3>تمرين اليوم</h3>
+            <div id="todayWorkout"></div>
+          </section>
+          <section class="card">
+            <h3>ملخص التغذية اليومي</h3>
+            <div id="nutritionSummary"></div>
+          </section>
+        </div>
+      </section>
+
+      <section id="workouts" class="panel">
+        <div class="section-head">
+          <div><h2>سجل التمارين</h2><p class="muted">سجل كل مجموعة بالوزن والعدات</p></div>
+          <button id="newWorkoutBtn" class="primary">+ تمرين جديد</button>
+        </div>
+        <div id="workoutList" class="stack"></div>
+      </section>
+
+      <section id="nutrition" class="panel">
+        <div class="section-head">
+          <div><h2>التغذية اليومية</h2><p class="muted">سعرات وماكروز مع وجباتك</p></div>
+          <button id="newMealBtn" class="primary">+ إضافة وجبة</button>
+        </div>
+        <div class="macro-grid" id="macroGrid"></div>
+        <div id="mealList" class="stack"></div>
+      </section>
+
+      <section id="measurements" class="panel">
+        <div class="section-head">
+          <div><h2>قياسات الجسم</h2><p class="muted">احتفظ بتاريخ كل قراءة للمقارنة</p></div>
+          <button id="newMeasurementBtn" class="primary">+ قياس جديد</button>
+        </div>
+        <div id="measurementList" class="stack"></div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="modal">
+    <form id="modalForm" method="dialog">
+      <div class="modal-head">
+        <h3 id="modalTitle">إضافة</h3>
+        <button class="icon-btn" value="cancel" aria-label="إغلاق">×</button>
+      </div>
+      <div id="modalFields" class="form-grid"></div>
+      <div class="modal-actions">
+        <button value="cancel" class="secondary">إلغاء</button>
+        <button id="saveModalBtn" value="default" class="primary">حفظ</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
