@@ -2,10 +2,13 @@
   "name":"Fitness Tracker",
   "short_name":"Fitness",
   "start_url":"./",
+  "scope":"./",
   "display":"standalone",
-  "background_color":"#f4f7fb",
-  "theme_color":"#0f172a",
+  "orientation":"portrait-primary",
+  "background_color":"#f5f7fb",
+  "theme_color":"#101828",
   "lang":"ar",
   "dir":"rtl",
-  "description":"Workout, nutrition and body measurement tracker"
+  "description":"تطبيق شخصي لمتابعة التمارين والتغذية وقياسات الجسم",
+  "icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
 }
