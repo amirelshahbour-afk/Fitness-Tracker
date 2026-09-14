@@ -26,17 +26,17 @@
       <button class="tab" data-tab="measurements">القياسات</button>
     </nav>
 
-    <main>
+    <div class="daybar"><label for="logDate">يوم التسجيل</label><input id="logDate" type="date"><button class="secondary" id="todayBtn">اليوم</button><button class="secondary" id="settingsBtn">الأهداف</button><button class="secondary" id="exportBtn">نسخة احتياطية</button><label class="secondary" for="importFile">استيراد</label><input class="hidden" id="importFile" type="file" accept="application/json"><p class="muted">الحفظ على هذا المتصفح • صدّر نسخة احتياطية لنقل سجلك أو حمايته.</p></div><p id="notice" role="status"></p><main>
       <section id="dashboard" class="panel active">
         <div class="hero-card">
           <div>
             <span class="badge">آخر قياس</span>
-            <h2 id="heroWeight">84.0 كجم</h2>
-            <p id="heroDate" class="muted">12 سبتمبر 2026</p>
+            <h2 id="heroWeight">—</h2>
+            <p id="heroDate" class="muted">سجل أول قياس لبدء المتابعة</p>
           </div>
           <div class="goal-ring" aria-label="تقدم هدف الوزن">
-            <span id="goalProgress">40%</span>
-            <small>نحو 70 كجم</small>
+            <span id="goalProgress">—</span>
+            <small>حدد هدفك</small>
           </div>
         </div>
 
@@ -46,16 +46,16 @@
           <div class="section-head">
             <div><h3>اتجاه الوزن</h3><p class="muted">آخر القياسات المسجلة</p></div>
           </div>
-          <canvas id="weightChart" width="900" height="280"></canvas>
+          <p id="chartHint" class="muted"></p><canvas aria-label="رسم تطور الوزن؛ القراءات التفصيلية في تبويب القياسات" id="weightChart" width="900" height="280"></canvas>
         </section>
 
         <div class="two-col">
           <section class="card">
-            <h3>تمرين اليوم</h3>
+            <h3>تمارين اليوم المحدد</h3>
             <div id="todayWorkout"></div>
           </section>
           <section class="card">
-            <h3>ملخص التغذية اليومي</h3>
+            <h3>تغذية اليوم المحدد</h3>
             <div id="nutritionSummary"></div>
           </section>
         </div>
@@ -92,11 +92,11 @@
     <form id="modalForm" method="dialog">
       <div class="modal-head">
         <h3 id="modalTitle">إضافة</h3>
-        <button class="icon-btn" value="cancel" aria-label="إغلاق">×</button>
+        <button class="icon-btn" type="button" onclick="document.querySelector('#modal').close()" aria-label="إغلاق">×</button>
       </div>
       <div id="modalFields" class="form-grid"></div>
       <div class="modal-actions">
-        <button value="cancel" class="secondary">إلغاء</button>
+        <button type="button" onclick="document.querySelector('#modal').close()" class="secondary">إلغاء</button>
         <button id="saveModalBtn" value="default" class="primary">حفظ</button>
       </div>
     </form>
