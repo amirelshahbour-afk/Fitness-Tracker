@@ -10,3 +10,14 @@ Install the pinned dev dependencies, then run `npm run build`. Source assets are
 
 ## Verification
 Tested against SQLite with two simulated browser clients: initial migration, additions, offline queue replay, independent concurrent changes, deletions, acknowledgement, user isolation, and stale-revision rejection. No live browser test performed.
+
+## Family, nutrition and reminders
+Family profiles are owned and managed inside the current signed-in account; they are not invitations or separate logins. Each profile has an isolated cloud state and device cache. The default profile retains existing data.
+
+The nutrition tool accepts manually entered InBody fields and optional device-only image preview. It generates a seven-day draft with natural foods, cooked edible weights, approximate food composition, exclusion filters, and cut/bulk/maintenance goals. It does not perform image OCR. Adult healthy-person scope is enforced; minors, pregnancy/breastfeeding or medical conditions, other allergies, and out-of-range estimates are directed to individual professional planning. Meals are not logged until explicitly selected and confirmed. Calorie/protein totals are shown separately from targets.
+
+Reminders show in-app while visible. A downloadable 90-day recurring ICS calendar with alarms supports notifications through the user's calendar application after import and permissions. Changing in-app settings does not modify imported calendar events. Web Push is not configured.
+
+The exercise selector supports Arabic/English search, resistance machines, assisted machines, cables, dumbbells, barbells, Smith machines, kettlebells, bodyweight and cardio. Equipment is generic and is not a verified inventory of any particular PureGym branch. Cardio uses duration/distance, resistance uses sets/reps; assisted-machine values mean assistance, and dumbbell entries use one dumbbell.
+
+Additional validation covered schema migration, profile ownership and unauthorized access, six goal/sex meal-plan combinations, all supported allergen exclusions and underage/medical/underweight gates.
