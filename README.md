@@ -1,26 +1,12 @@
-# Fitness Tracker — يومك بصحة
+# Fitness Tracker
 
-تطبيق شخصي عربي للموبايل والكمبيوتر.
+Private daily meals, water, walking, exercise and weight tracker.
 
-[افتح التطبيق الخاص](https://amir-fitness-tracker.alyamama-fi-6050.chatgpt.site)
+## Cloud sync
+Open the same hosted URL on each device and sign in with the same ChatGPT account. Wait for “متزامن مع حسابك”. Existing device records are merged once on first connection. D1 is authoritative; local storage retains a cache and a pending-operation outbox during connection failures. Online devices refresh every 15 seconds and on focus. Concurrent edits to different records merge; the later accepted operation wins for the same field or record. Deletions propagate. Watch data is still entered manually.
 
-## الوظائف
-- لوحة يومية مع اختيار التاريخ وسجل الوجبات والسعرات والماكروز.
-- إضافة المياه بسرعة (250 أو 500 مل) أو كمية مخصصة، مع سجل قابل للتعديل.
-- إدخال إجمالي خطوات اليوم والدقائق والمسافة؛ الحفظ يحدث قراءة اليوم دون مضاعفة الخطوات.
-- تسجيل تمارين المقاومة والأوزان والعدات: 3 جولات وجولة رابعة اختيارية.
-- تكرار وجبة أو تمرين سابق مع التعديل قبل الحفظ، ومؤقت راحة 60 أو 90 ثانية.
-- أهداف شخصية للمياه والخطوات والوزن والتغذية وأيام التمرين الأسبوعية.
-- تقارير 7 و30 يومًا، رسم الوزن وجدول القياسات وملاحظات يومية.
-- تصدير JSON واستيراد بالدمج؛ لا تكرر السجلات المطابقة، وتبقى الأولوية للبيانات والأهداف الحالية عند التعارض.
+## Build
+Install the pinned dev dependencies, then run `npm run build`. Source assets are in dist/; scripts/build.mjs emits a Worker in dist/server/index.js. Drizzle schema and generated migration are tracked. Deployment requires the private Sites dispatcher identity headers and the DB binding. Run `drizzle-kit generate` only for a new schema change; do not edit applied migrations.
 
-## البيانات
-تبقى سجلات الإصدار السابق محفوظة باستخدام نفس مفتاح LocalStorage. لا توجد سجلات تجريبية أو أهداف صحية مفروضة. الحفظ محلي في نفس المتصفح، دون مزامنة تلقائية أو ربط Apple Health. القيم الغذائية وإجمالي الخطوات يتم إدخالهما يدويًا. تغيير كمية الطعام لا يعيد حساب السعرات تلقائيًا. التقدم في التقارير يقارن بالأهداف الحالية.
-
-صدّر نسخة احتياطية قبل مسح بيانات المتصفح أو تغيير الجهاز. تظهر رسالة خطأ إذا تعذر الحفظ بدل تأكيد نجاح غير حقيقي. المؤقت يعمل أثناء فتح التطبيق.
-
-## التشغيل
-استضافة ثابتة لملفات الجذر، دون تبعيات أو خطوة بناء. على iPhone افتح الرابط في Safari ثم مشاركة ثم إضافة إلى الشاشة الرئيسية. الرابط المستضاف خاص بالحساب المصرح له.
-
-## التحقق
-فحص JavaScript والأصول وmanifest، واختبارات منطقية للهجرة من الإصدار السابق، الأقسام الستة، إضافة المياه، تحديث خطوات اليوم، الوجبات، هروب النصوص، تكرار السجلات، الجولة الرابعة الاختيارية، إزالة التكرار عند الدمج، التواريخ غير الصالحة، وفشل الحفظ والبيانات التالفة. لم يُجرَ اختبار متصفح مرئي.
+## Verification
+Tested against SQLite with two simulated browser clients: initial migration, additions, offline queue replay, independent concurrent changes, deletions, acknowledgement, user isolation, and stale-revision rejection. No live browser test performed.
