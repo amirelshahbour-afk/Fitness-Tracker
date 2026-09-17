@@ -1,0 +1,47 @@
+'use strict';
+(()=>{
+ const MAX_FILE=12*1024*1024;
+ const allowed=new Set(['image/jpeg','image/png','image/webp','image/heic','image/heif']);
+ const $=s=>document.querySelector(s);
+ const setStatus=(text,error=false)=>{const el=$('#inbodyStatus');if(!el)return;el.textContent=text;el.className='form-note'+(error?' inbody-error':'')};
+ const field=(name)=>document.querySelector(`#f-${name}`);
+ const setValue=(name,value)=>{if(value===null||value===undefined||value==='')return;const el=field(name);if(el)el.value=value};
+ async function fileToDataUrl(file){
+   if(file.size>MAX_FILE)throw Error('الصورة أكبر من 12 ميجابايت. اختر صورة أصغر.');
+   if(!allowed.has(file.type)&&!file.name.match(/\.(jpe?g|png|webp|heic|heif)$/i))throw Error('استخدم صورة JPG أو PNG أو WEBP أو HEIC.');
+   let bitmap;
+   try{bitmap=await createImageBitmap(file,{imageOrientation:'from-image'})}catch{}
+   if(!bitmap){return await new Promise((resolve,reject)=>{const r=new FileReader();r.onerror=()=>reject(Error('تعذر قراءة الصورة.'));r.onload=()=>resolve(r.result);r.readAsDataURL(file)})}
+   const maxEdge=2600,scale=Math.min(1,maxEdge/Math.max(bitmap.width,bitmap.height));
+   const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(bitmap.width*scale));canvas.height=Math.max(1,Math.round(bitmap.height*scale));
+   const ctx=canvas.getContext('2d',{alpha:false});ctx.drawImage(bitmap,0,0,canvas.width,canvas.height);bitmap.close?.();
+   return canvas.toDataURL('image/jpeg',.92);
+ }
+ async function analyze(file){
+   const button=$('#inbodyAnalyze');if(button){button.disabled=true;button.textContent='جارٍ قراءة التقرير…'}setStatus('يتم الآن قراءة القيم من صورة InBody. راجع الأرقام قبل الحفظ.');
+   try{
+     const image=await fileToDataUrl(file);
+     const r=await fetch('/api/inbody-read',{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify({image})});
+     let body={};try{body=await r.json()}catch{}
+     if(r.status===401)throw Error('سجّل الدخول بنفس حسابك ثم أعد المحاولة.');
+     if(r.status===503&&body.error==='openai_not_configured')throw Error('قراءة InBody لم تُفعّل على الاستضافة بعد: أضف OPENAI_API_KEY ثم أعد المحاولة.');
+     if(!r.ok)throw Error(body.message||'تعذر تحليل صورة InBody. جرّب صورة أوضح ومباشرة للتقرير.');
+     const m=body.measurement||{};
+     ['date','weight','bmi','bfr','fatMass','muscleWeight','water','bmr','visceralFat','leanWeight'].forEach(k=>setValue(k,m[k]));
+     const filled=['weight','bmi','bfr','fatMass','muscleWeight','water','bmr','visceralFat','leanWeight'].filter(k=>m[k]!=null).length;
+     const warning=(body.warnings||[]).join(' ');
+     setStatus(`تمت قراءة ${filled} قيمة${body.confidence?` · الثقة ${body.confidence==='high'?'عالية':body.confidence==='medium'?'متوسطة':'منخفضة'}`:''}. راجع القيم ثم اضغط حفظ.${warning?' '+warning:''}`);
+   }catch(err){setStatus(err.message||'تعذر تحليل الصورة.',true)}finally{if(button){button.disabled=false;button.textContent='قراءة الصورة تلقائيًا'}}
+ }
+ function enhance(){
+   const dialog=$('#editor'),title=$('#dialogTitle'),fields=$('#fields');
+   if(!dialog?.open||!title||!fields||!title.textContent.includes('قياس')||$('#inbodyReader'))return;
+   const box=document.createElement('div');box.id='inbodyReader';box.className='field full';box.innerHTML=`<div class="notice"><strong>قراءة صورة InBody تلقائيًا</strong><p class="sub">التقط صورة واضحة وكاملة للتقرير. سيتم استخراج الأرقام وملء الحقول فقط؛ لن يتم حفظ شيء قبل مراجعتك والضغط على حفظ.</p><input id="inbodyFile" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif" capture="environment"><button type="button" class="button secondary" id="inbodyAnalyze" disabled>قراءة الصورة تلقائيًا</button><p id="inbodyStatus" class="form-note">اختر صورة التقرير أولًا.</p></div>`;
+   fields.prepend(box);
+   const input=$('#inbodyFile'),button=$('#inbodyAnalyze');
+   input.addEventListener('change',()=>{button.disabled=!input.files?.[0];setStatus(input.files?.[0]?'الصورة جاهزة للقراءة.':'اختر صورة التقرير أولًا.')});
+   button.addEventListener('click',()=>{const file=input.files?.[0];if(file)analyze(file)});
+ }
+ const observer=new MutationObserver(enhance);observer.observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['open']});
+ document.addEventListener('click',()=>queueMicrotask(enhance));
+})();
