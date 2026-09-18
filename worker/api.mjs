@@ -3,6 +3,7 @@ export async function api(request,env){
  let user=request.headers.get('oai-authenticated-user-id');
  if(!user)return json({error:'sign_in_required'},401);
  const url=new URL(request.url);
+ if(url.pathname==='/api/food-photo')return foodPhoto(request,env,user);
  if(url.pathname==='/api/profiles'){
   if(request.method==='GET'){
    const rows=await env.DB.prepare('SELECT id,name FROM family_profiles WHERE owner_id = ? ORDER BY created_at').bind(user).all();
