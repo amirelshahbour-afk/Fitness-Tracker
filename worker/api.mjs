@@ -24,7 +24,7 @@ export async function api(request,env){
  }
 
  if(url.pathname==='/api/source-history'&&request.method!=='GET')return json({error:'method_not_allowed'},405);
- if(url.pathname==='/api/source-history')return account.owner?json({measurements:ownerHistory}):json({error:'forbidden'},403);
+ if(url.pathname==='/api/source-history')return account.owner?json({measurements:ownerHistory,historyVersion:2}):json({error:'forbidden'},403);
  if(url.pathname==='/api/food-photo'||url.pathname==='/api/inbody-photo')return foodPhoto(request,env,user);
  if(url.pathname==='/api/profiles'){
   if(request.method==='GET'){

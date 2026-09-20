@@ -28,3 +28,10 @@ Trusted dispatcher email is hashed into a stable account key (trusted user-ID fa
 The 101-record Excel history is server-only and accessible exclusively to the original owner. Muscle percentages remain percentages; two suspicious weight records are retained but excluded pending confirmation. The PDF's 31-exercise, four-session glute-focused routine is an optional editable template. Completion is tracked per date and exercise, separately from actual performance.
 
 Vision service quota, credentials and rate-limit failures are distinct. Failures log upstream status, code and request ID without images or secrets. Tests use mocked vision responses; billing availability requires a successful real request.
+
+## Body coaching and schematic 3D
+Owner-only reference import v2 adds 25 Boditrax body scans and the supplied InBody 270 report to the 101 existing scale measurements. Login events and IP addresses are not imported. Latest Boditrax scan is 2026-06-09; the export/login date is not a measurement date. BMR kJ is converted using 4.184 kJ/kcal; total muscle and skeletal muscle stay separate.
+
+The body dashboard shows dated source-specific comparisons, body composition and segment values. Seven-day meals and 2–4-session resistance drafts use confirmed preferences, goal and health gates. Adoption never logs consumed food or completed exercise. Reports older than 90 days cannot be adopted. The default goal heuristic is transparent and editable, not diagnostic. Nutrition PDF used only for food ideas; no supplement regimens were copied.
+
+WebGL provides a rotatable, selectable region schematic. Geometry never claims to reproduce body shape or forecast cosmetic results. If current measurements lack regions, a clearly dated older detailed scan supplies region values. Numeric region controls remain usable without WebGL. Browser print provides a static report. No live browser/device rendering verification was available.
