@@ -5,6 +5,24 @@ export async function api(request,env){
  if(!user)return json({error:'sign_in_required'},401);
  if(request.headers.get('x-fitness-account')!==user)return json({error:'account_changed'},401);
  const url=new URL(request.url);
+ if(url.pathname==='/api/presence'){
+  if(request.method!=='POST')return json({error:'method_not_allowed'},405);
+  if(request.headers.get('origin')!==url.origin)return json({error:'forbidden_origin'},403);
+  const now=new Date().toISOString();
+  await env.DB.prepare('INSERT INTO app_users (user_id,email,is_owner,first_seen,last_seen) VALUES (?,?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET email=excluded.email,is_owner=excluded.is_owner,last_seen=MAX(app_users.last_seen,excluded.last_seen)').bind(user,account.email,account.owner?1:0,now,now).run();
+  return json({ok:true});
+ }
+ if(url.pathname==='/api/admin/users'){
+  if(!account.owner)return json({error:'forbidden'},403);
+  if(request.method!=='GET')return json({error:'method_not_allowed'},405);
+  const page=Number(url.searchParams.get('page')||1);
+  if(!Number.isSafeInteger(page)||page<1||page>100000)return json({error:'invalid_page'},400);
+  const since=new Date(Date.now()-7*86400000).toISOString();
+  const stats=await env.DB.prepare('SELECT COUNT(*) AS total, COALESCE(SUM(is_owner),0) AS owners, COALESCE(SUM(CASE WHEN last_seen >= ? THEN 1 ELSE 0 END),0) AS active FROM app_users').bind(since).first();
+  const rows=await env.DB.prepare('SELECT email,is_owner,first_seen,last_seen FROM app_users ORDER BY last_seen DESC,user_id LIMIT 50 OFFSET ?').bind((page-1)*50).all();
+  return json({stats,users:rows.results,page,pageSize:50});
+ }
+
  if(url.pathname==='/api/source-history'&&request.method!=='GET')return json({error:'method_not_allowed'},405);
  if(url.pathname==='/api/source-history')return account.owner?json({measurements:ownerHistory}):json({error:'forbidden'},403);
  if(url.pathname==='/api/food-photo'||url.pathname==='/api/inbody-photo')return foodPhoto(request,env,user);

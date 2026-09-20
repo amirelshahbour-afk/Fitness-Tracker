@@ -11,3 +11,10 @@ export const familyProfiles = sqliteTable('family_profiles', {
  name: text('name').notNull(),
  createdAt: text('created_at').notNull(),
 }, (table) => [index('family_profiles_owner_idx').on(table.ownerId)]);
+export const appUsers = sqliteTable('app_users', {
+ userId: text('user_id').primaryKey(),
+ email: text('email').notNull(),
+ isOwner: integer('is_owner').notNull().default(0),
+ firstSeen: text('first_seen').notNull(),
+ lastSeen: text('last_seen').notNull(),
+}, (table) => [index('app_users_last_seen_idx').on(table.lastSeen)]);
