@@ -14,10 +14,17 @@ Tested against SQLite with two simulated browser clients: initial migration, add
 ## Family, nutrition and reminders
 Family profiles are owned and managed inside the current signed-in account; they are not invitations or separate logins. Each profile has an isolated cloud state and device cache. The default profile retains existing data.
 
-The nutrition tool accepts manually entered InBody fields and optional device-only image preview. It generates a seven-day draft with natural foods, cooked edible weights, approximate food composition, exclusion filters, and cut/bulk/maintenance goals. It does not perform image OCR. Adult healthy-person scope is enforced; minors, pregnancy/breastfeeding or medical conditions, other allergies, and out-of-range estimates are directed to individual professional planning. Meals are not logged until explicitly selected and confirmed. Calorie/protein totals are shown separately from targets.
+The nutrition tool accepts manually entered InBody fields or an image submitted to the configured OpenAI API for extraction and review. It generates a seven-day draft with natural foods, cooked edible weights, approximate food composition, exclusion filters, and cut/bulk/maintenance goals. Unreadable values stay blank; the user confirms extracted values before saving. Adult healthy-person scope is enforced; minors, pregnancy/breastfeeding or medical conditions, other allergies, and out-of-range estimates are directed to individual professional planning. Meals are not logged until explicitly selected and confirmed. Calorie/protein totals are shown separately from targets.
 
 Reminders show in-app while visible. A downloadable 90-day recurring ICS calendar with alarms supports notifications through the user's calendar application after import and permissions. Changing in-app settings does not modify imported calendar events. Web Push is not configured.
 
 The exercise selector supports Arabic/English search, resistance machines, assisted machines, cables, dumbbells, barbells, Smith machines, kettlebells, bodyweight and cardio. Equipment is generic and is not a verified inventory of any particular PureGym branch. Cardio uses duration/distance, resistance uses sets/reps; assisted-machine values mean assistance, and dumbbell entries use one dumbbell.
 
 Additional validation covered schema migration, profile ownership and unauthorized access, six goal/sex meal-plan combinations, all supported allergen exclusions and underage/medical/underweight gates.
+
+## Independent accounts and reference imports
+Trusted dispatcher email is hashed into a stable account key (trusted user-ID fallback). APIs and browser caches/outboxes use that key; no user-provided identity is accepted. Site viewers can edit their own data, not other accounts. Invitations are controlled by Sites sharing and still require recipient emails. Original legacy device data is migrated only for the original owner.
+
+The 101-record Excel history is server-only and accessible exclusively to the original owner. Muscle percentages remain percentages; two suspicious weight records are retained but excluded pending confirmation. The PDF's 31-exercise, four-session glute-focused routine is an optional editable template. Completion is tracked per date and exercise, separately from actual performance.
+
+Vision service quota, credentials and rate-limit failures are distinct. Failures log upstream status, code and request ID without images or secrets. Tests use mocked vision responses; billing availability requires a successful real request.

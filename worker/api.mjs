@@ -1,9 +1,13 @@
 const json=(body,status=200)=>new Response(JSON.stringify(body),{status,headers:{'content-type':'application/json;charset=utf-8','cache-control':'no-store'}});
 export async function api(request,env){
- let user=request.headers.get('oai-authenticated-user-id');
+ const account=await identity(request);
+ let user=account?.key;
  if(!user)return json({error:'sign_in_required'},401);
+ if(request.headers.get('x-fitness-account')!==user)return json({error:'account_changed'},401);
  const url=new URL(request.url);
- if(url.pathname==='/api/food-photo')return foodPhoto(request,env,user);
+ if(url.pathname==='/api/source-history'&&request.method!=='GET')return json({error:'method_not_allowed'},405);
+ if(url.pathname==='/api/source-history')return account.owner?json({measurements:ownerHistory}):json({error:'forbidden'},403);
+ if(url.pathname==='/api/food-photo'||url.pathname==='/api/inbody-photo')return foodPhoto(request,env,user);
  if(url.pathname==='/api/profiles'){
   if(request.method==='GET'){
    const rows=await env.DB.prepare('SELECT id,name FROM family_profiles WHERE owner_id = ? ORDER BY created_at').bind(user).all();
