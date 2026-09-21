@@ -8,7 +8,7 @@ function decisionMetrics(state,end){
  const workouts=state.workouts.filter(w=>dates.includes(w.date)),groups={};
  for(const w of workouts)if(w.exerciseType!=='كارديو')groups[w.group]=(groups[w.group]||0)+w.sets.length;
  const plan=state.training.exercises||[],sessions=['7','1','2','3','4','5','6'].filter(s=>!(state.training.weeklySplitActive&&['6','7'].includes(s))&&plan.some(x=>x.session===s));
- const finished=s=>dates.some(date=>plan.filter(x=>x.session===s).every(x=>state.training[date+':'+x.id]===true));
+ const finished=s=>dates.some(date=>plan.filter(x=>x.session===s).every(x=>(state.training[date+':'+x.id]===true||state.workouts.some(w=>w.date===date&&(w.planId===x.id||(typeof exerciseKey==='function'&&exerciseKey(w.exercise)===exerciseKey(x.exercise)))))));
  const next=sessions.find(s=>!finished(s));
  return {weight,before,complete:complete.length,calories:mean('calories'),protein:mean('protein'),workoutDays:new Set(workouts.map(w=>w.date)).size,groups,next,sessionCount:sessions.length,finished:sessions.filter(finished).length};
 }
