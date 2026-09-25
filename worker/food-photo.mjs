@@ -23,7 +23,7 @@ async function foodPhoto(request,env,user){
  if(!response.ok){
   let failure;try{failure=await response.json()}catch{}
   const code=failure?.error?.code,type=failure?.error?.type;
-  const exhausted=['insufficient_quota','billing_hard_limit_reached','billing_not_active'].includes(code)||type==='insufficient_quota';
+  const exhausted=['credit_balance_exhausted','insufficient_quota','billing_hard_limit_reached','billing_not_active'].includes(code)||type==='insufficient_quota';
   console.error(JSON.stringify({event:'vision_service_failure',status:response.status,code:typeof code==='string'?code.slice(0,80):'unknown',requestId:response.headers.get('x-request-id')}));
   const error=exhausted?'insufficient_quota':response.status===429?(code==='rate_limit_exceeded'||type==='rate_limit_exceeded'?'rate_limited':'service_limit_unknown'):response.status===401||response.status===403?'service_credentials':'analysis_failed';
   return json({error,requestId:(response.headers.get('x-request-id')||'').slice(0,120),providerCode:typeof code==='string'?code.slice(0,80):'',retryAfter:response.status===429?response.headers.get('retry-after'):null},response.status===429?429:503);
