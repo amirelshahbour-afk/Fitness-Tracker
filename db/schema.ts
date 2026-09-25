@@ -18,3 +18,12 @@ export const appUsers = sqliteTable('app_users', {
  firstSeen: text('first_seen').notNull(),
  lastSeen: text('last_seen').notNull(),
 }, (table) => [index('app_users_last_seen_idx').on(table.lastSeen)]);
+export const healthLinks = sqliteTable('health_links', {
+ scope: text('scope').primaryKey(), tokenHash: text('token_hash').notNull().unique(),
+ createdAt: text('created_at').notNull(), lastReceived: text('last_received'),
+ rateStart: integer('rate_start').notNull().default(0), rateCount: integer('rate_count').notNull().default(0),
+});
+export const healthDaily = sqliteTable('health_daily', {
+ id: text('id').primaryKey(), scope: text('scope').notNull(), day: text('day').notNull(),
+ metric: text('metric').notNull(), payload: text('payload').notNull(), updatedAt: text('updated_at').notNull(),
+},table=>[index('health_daily_scope_day_idx').on(table.scope,table.day)]);

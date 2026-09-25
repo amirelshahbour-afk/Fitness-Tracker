@@ -52,6 +52,7 @@ export async function api(request,env){
   if(!own)return json({error:'profile_not_found'},403);
   user=user+':profile:'+profile;
  }
+ if(url.pathname==='/api/health-link')return healthManage(request,env,user);
  if(request.method==='GET'){
  const row=await env.DB.prepare('SELECT payload, revision FROM fitness_state WHERE user_id = ?').bind(user).first();
  return json({data:row?JSON.parse(row.payload):null,revision:row?.revision??0});
